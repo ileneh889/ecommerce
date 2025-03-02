@@ -50,7 +50,8 @@ export async function POST(req: Request) {
       status: 400,
     });
   }
-  // When user is created or updated
+  // sychronizing clerk and mySQL database
+  //// 1.When user is created or updated
   if (evt.type === "user.created" || evt.type === "user.updated") {
     const data = JSON.parse(body).data;
 
@@ -61,7 +62,7 @@ export async function POST(req: Request) {
       email: data.email_addresses[0].email_address,
       picture: data.image_url,
     };
-    
+
     if (!user) return;
 
     // Upsert user in the database (update if exists, create if not)
@@ -86,6 +87,16 @@ export async function POST(req: Request) {
     await clerkClient.users.updateUserMetadata(data.id, {
       privateMetadata: {
         role: dbUser.role || "USER", // Default role to "USER" if not present in dbUser
+      },
+    });
+  }
+
+  //// 2.When user is deleted
+  if (evt.type === "user.deleted") {
+    const userId = JSON.parse(body).data.id;
+    await db.user.delete({
+      where: {
+        id: userId,
       },
     });
   }
