@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { UserButton } from "@clerk/nextjs";
 
 // next-themes 
-import ThemeToggle from "@/components/shared/theme-toggle";
+import ThemeToggle from "@/components/shared/Theme-toggle";
 
 
 export default function Home() {
