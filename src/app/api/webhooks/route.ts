@@ -1,8 +1,10 @@
 import { Webhook } from "svix";
 import { headers } from "next/headers";
 import { WebhookEvent, clerkClient } from "@clerk/nextjs/server";
-// import types (ts)
+
+// import types from schema.prisma
 import { User } from "@prisma/client";
+
 // import database for prisma client (table manipulation)
 import { db } from "@/lib/db";
 
@@ -32,7 +34,7 @@ export async function POST(req: Request) {
   const payload = await req.json();
   const body = JSON.stringify(payload);
 
-  // Create a new Svix instance with your secret.
+  // Create a new Svix instance with my secret.
   const wh = new Webhook(WEBHOOK_SECRET);
 
   let evt: WebhookEvent;
@@ -50,8 +52,8 @@ export async function POST(req: Request) {
       status: 400,
     });
   }
-  // sychronizing clerk and mySQL database
-  //// 1.When user is created or updated
+  //// sychronizing clerk and mySQL database
+  /// 1.When user is created or updated
   if (evt.type === "user.created" || evt.type === "user.updated") {
     const data = JSON.parse(body).data;
 
@@ -71,9 +73,9 @@ export async function POST(req: Request) {
       where: {
         email: user.email,
       },
-      // 若有搜尋到資料,更新資料
+      // 若有搜尋到資料,renew data
       update: user,
-      // 若沒有搜尋到資料,新增資料
+      // 若沒有搜尋到資料,add data
       create: {
         id: user.id!,
         name: user.name!,
@@ -91,7 +93,7 @@ export async function POST(req: Request) {
     });
   }
 
-  //// 2.When user is deleted
+  /// 2.When user is deleted
   if (evt.type === "user.deleted") {
     const userId = JSON.parse(body).data.id;
     await db.user.delete({
