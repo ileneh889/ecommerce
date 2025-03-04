@@ -6,6 +6,7 @@ import { currentUser } from "@clerk/nextjs/server"
 
 // components 
 import Header from "@/components/dashboard/header/Header"
+import Sidebar from "@/components/dashboard/sidebar/Sidebar";
 
 export default async function AdminDashboardLayout({ children }: { children: ReactNode }) {
   // redirect non-admin user to homepage
@@ -15,6 +16,7 @@ export default async function AdminDashboardLayout({ children }: { children: Rea
   return (
     <div className="w-full h-full" >
       {/* sidebar */}
+      <Sidebar isAdmin />
       <div className="w-full ml-[300px]">
         {/* Header */}
         <Header />
